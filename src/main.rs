@@ -124,8 +124,14 @@ async fn main() {
 
     // Проверяется конфигурация.
     // Далее - инициализируется устройство vJoy.
-    let vjoy = VJoy::from_default_dll_location().unwrap();
-    let device = vjoy.get_device_state(1).unwrap();
+    let mut vjoy = VJoy::from_default_dll_location().unwrap();
+    let mut device = vjoy.get_device_state(1).unwrap();
+
+    // Сброс осей к нейтральному положению
+    for axis in device.axes_mut() {
+        axis.set((i16::MAX / 2).into());
+    }
+    let _ = vjoy.update_device_state(&device);
 
     let shared_vjoy = Arc::new(Mutex::new(vjoy));
     let shared_device = Arc::new(Mutex::new(device));
