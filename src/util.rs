@@ -1,4 +1,4 @@
-use std::path::PathBuf;
+use std::{env, path::PathBuf};
 
 use crate::types::Axis;
 
@@ -63,13 +63,18 @@ pub fn get_device_ips() -> Vec<String> {
     unique_ips
 }
 
+pub fn get_certs_catalog_path() -> PathBuf {
+    let exe_path = env::current_dir().expect("Can't get current working directory");
+
+    return exe_path.join("certs")
+}
 pub fn get_cert_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-    .join("certs")
-    .join("cert.pem")
+    let certs_path = get_certs_catalog_path();
+
+    return certs_path.join("cert.pem")
 }
 pub fn get_key_path() -> PathBuf {
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-    .join("certs")
-    .join("key.pem")
+    let certs_path = get_certs_catalog_path();
+    
+    return certs_path.join("key.pem")
 }

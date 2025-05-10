@@ -8,7 +8,7 @@ use clap::{arg, Parser};
 use rcgen::{CertifiedKey, generate_simple_self_signed};
 use tokio::{sync::{mpsc, Mutex}, task};
 use vjoy::{ButtonState, VJoy};
-use std::{fs::File, io::Write, net::SocketAddr, sync::Arc, time::Duration};
+use std::{fs::{create_dir, File}, io::Write, net::SocketAddr, sync::Arc, time::Duration};
 
 mod types;
 mod util;
@@ -69,6 +69,13 @@ fn generate_certificates() {
 }
 
 async fn init_certificates() -> RustlsConfig {
+    let certs_path = util::get_certs_catalog_path();
+    if !certs_path.exists() {
+        println!("Creating certs catalog: {:?}", certs_path);
+        create_dir(&certs_path).expect("Can't create certs catalog");
+    }
+
+
     let cert_file = util::get_cert_path();
     let key_file = util::get_key_path();
 
